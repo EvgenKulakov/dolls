@@ -27,17 +27,26 @@ class Doll {
 
 Doll I_AM(300, A0);
 Doll VOODOO(400, A1);
-Doll BEAVER(500, A2);
+Doll BEAR(500, A2);
 Doll CLOWN(600, A3);
 Doll GIRL(700, A4);
 
+bool lock = HIGH; // HIGH - lock активен, ящик закрыт
+#define PIN_LOCK 4
+
 void setup() {
+  pinMode(PIN_LOCK, OUTPUT);
+  digitalWrite(PIN_LOCK, lock);
   Serial.begin(9600);
 }
 
 void loop() {
   delay(100);
-  if (I_AM.isOpen() && VOODOO.isOpen() && BEAVER.isOpen() && CLOWN.isOpen() && GIRL.isOpen()) {
-    // открыть ящик
+  bool open = I_AM.isOpen() && VOODOO.isOpen() && BEAR.isOpen() && CLOWN.isOpen() && GIRL.isOpen();
+  Serial.println(open);
+  Serial.println(lock);
+  if (open == true && lock == HIGH || open == false && lock == LOW) {
+    lock = !lock;
+    digitalWrite(PIN_LOCK, lock);
   }
 }
