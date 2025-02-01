@@ -2,24 +2,33 @@
 
 class Doll {
   private:
+    uint8_t pin;
+    int minWeight;
+    int maxWeight;
+    String name;
+    int startVal;
     int minVal;
     int maxVal;
-    uint8_t pin;
-    String name;
-
+    
   public:
-    Doll(int minimumVal, int maximumVal, uint8_t pinPotentiometer, String nameVal) {
-      minVal = minimumVal;
-      maxVal = maximumVal;
+    Doll(uint8_t pinPotentiometer, int minWeightVal, int maxWeightVal, String nameVal) {
       pin = pinPotentiometer;
+      minWeight = minWeightVal;
+      maxWeight = maxWeightVal;
       name = nameVal;
+    }
 
+    void init() {
       pinMode(pin, INPUT);
+      delay(200);
+      startVal = analogRead(pin);
+      minVal = startVal + minWeight;
+      maxVal = startVal + maxWeight;
     }
 
     bool isOpen() {
       int currentVal = analogRead(pin);
-      // Serial.println(name + currentVal);
+      // Serial.println(name + " startVal: " + startVal + " current: " + currentVal);
       if (currentVal >= minVal && currentVal <= maxVal) {
         return true;
       }
@@ -27,17 +36,23 @@ class Doll {
     }
 };
 
-Doll I_AM(122, 132, A0, "I_AM");
-Doll VOODOO(780, 790, A2, "VOODOO");
-Doll BEAR(560, 570, A4, "BEAR");
-Doll CLOWN(460, 470, A6, "CLOWN");
-Doll GIRL(984, 994, A7, "GIRL");
+Doll I_AM(A0, 19, 24, "I_AM");
+Doll VOODOO(A2, 14, 19, "VOODOO");
+Doll BEAR(A4, 20, 25, "BEAR");
+Doll CLOWN(A6, 15, 23, "CLOWN");
+Doll GIRL(A7, -38, -32, "GIRL");
 
 bool lock = HIGH; // HIGH - lock активен, ящик закрыт
 #define PIN_LOCK 4
 
 void setup() {
   pinMode(PIN_LOCK, OUTPUT);
+  I_AM.init();
+  VOODOO.init();
+  BEAR.init();
+  CLOWN.init();
+  GIRL.init();
+  delay(100);
   digitalWrite(PIN_LOCK, lock);
   // Serial.begin(9600);
 }
